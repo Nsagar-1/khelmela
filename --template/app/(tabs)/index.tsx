@@ -7,4 +7,4 @@ import DashBoard from '../DashBoard';
 import LoginSignup from './login';
 import FullMapMatches from '@/components/freeFire_fullmap';
 
-export default DashBoard ;
+export default  FullMapMatches;

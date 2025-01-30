@@ -184,7 +184,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '90%',
     marginVertical: 20,
+    marginTop: -5,
   },
+  underline:{
+
+    
+
+  },
+
   iconWrapper: {
     alignItems: 'center',
     justifyContent: 'center',

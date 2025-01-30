@@ -100,11 +100,13 @@ const LoginSignup = () => {
 
           <TouchableOpacity style={styles.button} onPress={isLogin? signIn : signUp}>
             <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Sign Up'   }</Text>
-          </TouchableOpacity>
 
+
+          </TouchableOpacity>
+{/* 
           <TouchableOpacity style={styles.button} onPress={Logout}>
             <Text style={styles.buttonText}>{'Log OUT'}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* Google Sign-Up Button */}
 
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    width: 380,
+    width: 330,
     height: 50,
     backgroundColor: 'white',
     borderRadius: 25,
