@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvo
 import { motion } from 'framer-motion';
 import { auth, googleProvider } from '../../config/firebase_config';
 import { createUserWithEmailAndPassword , signInWithPopup  , signOut} from 'firebase/auth';
-import DashBoard from '../DashBoard';
+import DashBoard from './DashBoard';
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup

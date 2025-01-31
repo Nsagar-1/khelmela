@@ -4,32 +4,24 @@ import { db } from "./firebase_config"; // Adjust path as needed
 
 // TO GET DATA FROM FIREBASE
 
+const getData = async (docsName) => {
+  try {
+    if (!docsName) {
+      console.error("Invalid docsName:", docsName);
+      return [];
+    }
 
-const getData = (docsName: string | undefined) => {
-    const [filteredData, setFilteredData] = useState<any[]>([]);
-    
-    useEffect(() => {
-        const findData = async () => {
-            try {
-                if (!docsName || typeof docsName !== "string") {
-                    console.error("Invalid docsName:", docsName);
-                    return; // Prevent calling Firestore with invalid input
-                }
-
-                const getRef = collection(db, docsName);
-                const data = await getDocs(getRef);
-                const filtered = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-                setFilteredData(filtered); // Update state
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
-        findData();
-    }, [docsName]); // Re-run if `docsName` changes
-
-    return filteredData;
+    const getRef = collection(db, docsName);
+    const data = await getDocs(getRef);
+    return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
 };
+
+export default getData;
+
 
 
 

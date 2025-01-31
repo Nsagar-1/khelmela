@@ -26,11 +26,13 @@ const FullMapMatches = () => {
           <Picker.Item label="Solo Match" value="Solo Match" />
         </Picker>
       </View>
+
+      
       
       {[{ time: selectedTime1, entryFee: entryFee1, odds: null }, { time: selectedTime2, entryFee: entryFee2, odds: { top3: 2.5, top15: 1.5 } }].map((match, index) => (
         <View key={index} style={{ borderWidth: 1, padding: 10, marginVertical: 10 }}>
           <View style= {styles.bundler} >
-          <Image style={{ height:30 , width : 30 , borderRadius:40     }}  source={require('../assets/images/free.jpg')} />
+          <Image style={{ height:30 , width : 30 , borderRadius:40     }}  source={require('../../assets/images/free.jpg')} />
           <Text style={{ fontWeight: 'bold' , marginLeft: -85 }}>Freefire full match</Text>
           <Text>Limited Ammo: {limitedAmmo}</Text>
           </View>
@@ -49,9 +51,9 @@ const FullMapMatches = () => {
     
       
           <View style={{ flexDirection: 'row' , marginTop : 20}}>
-            <Image source={require('../assets/images/map1.png')} style={{ width: 70, height: 70 , marginRight: 30 , marginLeft : 40 , }} />
-            <Image source={require('../assets/images/map2.png')} style={{ width: 70, height: 70 , marginRight: 30 }} />
-            <Image source={require('../assets/images/map3.png')} style={{ width: 70, height: 70  , marginRight: 30 }} />
+            <Image source={require('../../assets/images/map1.png')} style={{ width: 70, height: 70 , marginRight: 30 , marginLeft : 40 , }} />
+            <Image source={require('../../assets/images/map2.png')} style={{ width: 70, height: 70 , marginRight: 30 }} />
+            <Image source={require('../../assets/images/map3.png')} style={{ width: 70, height: 70  , marginRight: 30 }} />
           </View>
           <View style={styles.bundler}>
 

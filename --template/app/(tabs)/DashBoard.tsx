@@ -55,7 +55,7 @@ const DashBoard = ({Username , PhotoURL}) => {
 
           }>
       
-      <Image source={require('../assets/images/free.jpg')} style={styles.icon} />
+      <Image source={require('../../assets/images/free.jpg')} style={styles.icon} />
 
       </TouchableOpacity>
 
@@ -69,7 +69,7 @@ const DashBoard = ({Username , PhotoURL}) => {
           
           }}>
 
-        <Image source={require('../assets/images/pubg.jpg')} style={styles.icon} />
+        <Image source={require('../../assets/images/pubg.jpg')} style={styles.icon} />
         </TouchableOpacity>
 
         </View>
@@ -83,7 +83,7 @@ const DashBoard = ({Username , PhotoURL}) => {
 
          }  }>
 
-        <Image source={require('../assets/images/COD1.png')} style={styles.icon} />
+        <Image source={require('../../assets/images/COD1.png')} style={styles.icon} />
         
         </TouchableOpacity>
 

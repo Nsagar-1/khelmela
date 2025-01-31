@@ -1,28 +1,26 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
+import { getData } from '../../config/dataFlow';
+import FullMapMatches from './freeFire_fullmap';
 
-
-import DashBoard from '../DashBoard';
-import LoginSignup from './login';
-import FullMapMatches from '@/components/freeFire_fullmap';
-
-import {getData , createData, updateData , deleteData } from '../../config/dataFlow';
-
+import ClashSquad from './ClashSquad';
 
 const App = () => { 
+    const [match, setMatch] = useState([]); 
 
-   const res = createData("User" , {name:"Picashow"});
-   console.log(res);
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await getData("matchcard");
+            setMatch(result);
+            console.log(result);
+            console.log(setMatch);
+        };
+        fetchData();
+    }, []);
 
-    console.log("Updated sucessfully")
+    return  <>  <FullMapMatches /> </>;
+};
 
-    return (<> 
-    IndexPage 
 
-    <Text > Indexpage </Text>
-    
-    
-    </>)
-}
 
-export default App ;
+export default ClashSquad ;
