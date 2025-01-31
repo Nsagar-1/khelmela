@@ -61,7 +61,7 @@ const Pannel_COD =() => {
 
 }
 
-  export const renderPannel =(pannel:number) => {
+  export const renderPannel =(pannel ) => {
         switch (pannel) {
             case 1:
                 return <Pannel_freefire />;

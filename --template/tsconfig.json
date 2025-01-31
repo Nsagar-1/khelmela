@@ -11,7 +11,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ]
+, "app/(tabs)/login.jsx", "app/(tabs)/First.jsx", "app/(tabs)/freeFire_fullmap.jsx", "app/(tabs)/gamePannel.jsx", "app/(tabs)/DashBoard.jsx", "app/(tabs)/ClashSquad.jsx"  ]
 }
