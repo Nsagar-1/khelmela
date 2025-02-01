@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
   TextInput,
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { MotiView, MotiText } from "moti";
 import { AntDesign, Ionicons, FontAwesome5, Entypo } from "@expo/vector-icons";
+import { createData, getData } from "@/config/dataFlow";
 
 const ToggleButton = ({ label, isActive, onPress }) => (
   <Pressable
@@ -54,8 +55,9 @@ const SelectorList = ({ data, activeId, onSelect, style }) => (
 const ClashSquad = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDetail, setShowDetail] = useState(true);
-
+  const [fetchData, setFetchData] = useState([]);
   const [formState, setFormState] = useState({
+    date: "",
     players: "1v1",
     limitedAmmo: true,
     headshot: true,
@@ -65,7 +67,8 @@ const ClashSquad = () => {
     matchName: "",
     bet: 20,
   });
-  const [tempname, setTempname] = useState("");
+
+  const roomName = useRef("");
   const [bet, setBet] = useState(10);
   const [activeIndexes, setActiveIndexes] = useState({
     player: 4,
@@ -104,10 +107,23 @@ const ClashSquad = () => {
         matchName: "tempName",
         bet: 100,
       }));
+      createData("matchCard", formState);
       setShowModal(false);
     }
     console.log(formState);
   };
+
+  useEffect(() => {
+    const getdata = async () => {
+      try {
+        const result = await getData("matchCard");
+        setFetchData(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getdata();
+  }, [formState]);
 
   return (
     <View style={styles.container}>
@@ -145,7 +161,55 @@ const ClashSquad = () => {
         <Entypo name="game-controller" size={24} color="black" />
         <Text style={styles.liveMatchesText}>Live Matches</Text>
       </View>
-
+      <FlatList
+        data={fetchData}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              width: 290,
+              borderColor: "black",
+              borderWidth: 1,
+              marginTop: 30,
+            }}
+          >
+            <View style={{ display: "flex", flexDirection: "row", gap: 60 }}>
+              <View style={{ marginLeft: 10 }}>
+                <Text style={{ fontWeight: 700 }}>
+                  Free Fire:{item.matchType}
+                </Text>
+                <Text>player mode:{item.playerMode}</Text>
+                <Text>Gun attributes:...</Text>
+                <Text>HeadShot only</Text>
+                <Text>Map:bermuda</Text>
+              </View>
+              <View>
+                <Text style={{ fontWeight: 700 }}>
+                  Limited Ammo:{item.ammoLimited}
+                </Text>
+                <Text>Round:{item.round}</Text>
+                <Text>Coin:{item.coin}</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                marginTop: 20,
+                borderTopWidth: 1,
+                display: "flex",
+                paddingLeft: 10,
+              }}
+            >
+              <Text>Opponent player:..</Text>
+              <View style={{ display: "flex", gap: 70, paddingBottom: 5 }}>
+                <Text style={{ fontWeight: 700 }}>
+                  Win Prize:{item.winPrize}
+                </Text>
+                <Text style={{ fontWeight: 700 }}>Entry:{item.entryFee}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+      />
       {/* Creation Modal */}
       <Modal transparent visible={showModal} animationType="fade">
         <Pressable
@@ -242,14 +306,6 @@ const ClashSquad = () => {
               </FormSection>
 
               {/* Name Input */}
-              <FormSection title="Name">
-                <TextInput
-                  style={styles.input}
-                  value={"Enter room Name"}
-                  onChangeText={(text) => setTempname(text)}
-                  placeholder="Enter room name"
-                />
-              </FormSection>
 
               {/* Bet Amount Input */}
               <FormSection title="Bet Amount">
@@ -272,6 +328,13 @@ const ClashSquad = () => {
             </ScrollView>
           </MotiView>
         </Pressable>
+
+        <TextInput
+          style={styles.input}
+          value={"Enter room Name"}
+          onChangeText={(text) => (roomName.current = text)}
+          placeholder="Enter room name"
+        />
       </Modal>
     </View>
   );
