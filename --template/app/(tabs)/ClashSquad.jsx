@@ -13,6 +13,8 @@ import { MotiView, MotiText } from "moti";
 import { AntDesign, Ionicons, FontAwesome5, Entypo } from "@expo/vector-icons";
 import { createData, getData } from "@/config/dataFlow";
 
+import MatchCard from "../../components/MatchCard";
+
 const ToggleButton = ({ label, isActive, onPress }) => (
   <Pressable
     onPress={onPress}
@@ -57,7 +59,9 @@ const ClashSquad = () => {
   const [showDetail, setShowDetail] = useState(true);
   const [fetchData, setFetchData] = useState([]);
   const [formState, setFormState] = useState({
+    matchType: "Clash Squad",
     date: "",
+    gunAtrribute: false,
     players: "1v1",
     limitedAmmo: true,
     headshot: true,
@@ -65,7 +69,8 @@ const ClashSquad = () => {
     rounds: 13,
     coin: "Default",
     matchName: "",
-    bet: 20,
+    bet: 0,
+    roomName: "",
   });
 
   const roomName = useRef("");
@@ -102,22 +107,30 @@ const ClashSquad = () => {
     if (formState.bet < 10 || formState.bet > 150) {
       alert("Bet must be between 10 and 150");
     } else {
-      setFormState((prev) => ({
-        ...prev,
-        matchName: "tempName",
-        bet: 100,
-      }));
-      createData("matchCard", formState);
+      const date = Date();
+
+      setFormState((prev) => {
+        const updatedState = {
+          ...prev,
+          date: date,
+        };
+
+        // Ensure the updated state is used in createData
+        createData("matchCard", updatedState);
+
+        return updatedState; // Update state correctly
+      });
+
       setShowModal(false);
     }
-    console.log(formState);
   };
 
   useEffect(() => {
     const getdata = async () => {
       try {
         const result = await getData("matchCard");
-        setFetchData(result);
+        await setFetchData(result);
+        console.log(fetchData[0].rounds);
       } catch (error) {
         console.log(error);
       }
@@ -128,14 +141,11 @@ const ClashSquad = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
-
       <View style={styles.header}>
         <AntDesign name="arrowleft" size={24} color="black" />
         <Text style={styles.headerTitle}>Clash Squad Matches</Text>
       </View>
-
       {/* Search Bar */}
-
       <View style={styles.searchContainer}>
         <Ionicons name="menu-outline" size={24} color="black" />
         <TextInput
@@ -145,17 +155,14 @@ const ClashSquad = () => {
         />
         <FontAwesome5 name="search" size={20} color="black" />
       </View>
-
       <Text style={styles.note}>
         Note: All matches are made by host player not admin
       </Text>
-
       {/* Create Button */}
       <Pressable style={styles.createButton} onPress={() => setShowModal(true)}>
         <Ionicons name="add-circle-outline" size={24} color="black" />
         <Text style={styles.createButtonText}>Create</Text>
       </Pressable>
-
       {/* Live Matches */}
       <View style={styles.liveMatches}>
         <Entypo name="game-controller" size={24} color="black" />
@@ -165,51 +172,28 @@ const ClashSquad = () => {
         data={fetchData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View
-            style={{
-              width: 290,
-              borderColor: "black",
-              borderWidth: 1,
-              marginTop: 30,
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 60 }}>
-              <View style={{ marginLeft: 10 }}>
-                <Text style={{ fontWeight: 700 }}>
-                  Free Fire:{item.matchType}
-                </Text>
-                <Text>player mode:{item.playerMode}</Text>
-                <Text>Gun attributes:...</Text>
-                <Text>HeadShot only</Text>
-                <Text>Map:bermuda</Text>
-              </View>
-              <View>
-                <Text style={{ fontWeight: 700 }}>
-                  Limited Ammo:{item.ammoLimited}
-                </Text>
-                <Text>Round:{item.round}</Text>
-                <Text>Coin:{item.coin}</Text>
-              </View>
-            </View>
-            <View
-              style={{
-                marginTop: 20,
-                borderTopWidth: 1,
-                display: "flex",
-                paddingLeft: 10,
-              }}
-            >
-              <Text>Opponent player:..</Text>
-              <View style={{ display: "flex", gap: 70, paddingBottom: 5 }}>
-                <Text style={{ fontWeight: 700 }}>
-                  Win Prize:{item.winPrize}
-                </Text>
-                <Text style={{ fontWeight: 700 }}>Entry:{item.entryFee}</Text>
-              </View>
-            </View>
-          </View>
+          <MatchCard
+            matchType={item.matchType}
+            a={item.players}
+            gunAtrribute={item.gunAtrribute.toString()}
+            round={item.rounds}
+            coin={item.coin}
+            prize={item.bet}
+            entryFee={item.bet}
+            headshot={item.headshot}
+          />
         )}
       />
+
+      {/* 
+      
+      
+      ***************** Creation Modal *****************
+      
+      
+      
+      */}
+
       {/* Creation Modal */}
       <Modal transparent visible={showModal} animationType="fade">
         <Pressable
@@ -232,12 +216,18 @@ const ClashSquad = () => {
                 <ToggleButton
                   label="Clash Squad"
                   isActive={showDetail}
-                  onPress={() => setShowDetail(true)}
+                  onPress={() => {
+                    setShowDetail(true);
+                    handleFormUpdate("matchType", "clashSquad");
+                  }}
                 />
                 <ToggleButton
                   label="Lone Wolf"
                   isActive={!showDetail}
-                  onPress={() => setShowDetail(false)}
+                  onPress={() => {
+                    setShowDetail(false);
+                    handleFormUpdate("matchType", "clashSquad");
+                  }}
                 />
               </View>
 
@@ -273,6 +263,12 @@ const ClashSquad = () => {
                   value={formState.skill}
                   onChange={(val) => handleFormUpdate("skill", val)}
                 />
+
+                <ToggleGroup
+                  label="Gun Attribute"
+                  value={formState.gunAtrribute}
+                  onChange={(val) => handleFormUpdate("gunAtrribute", val)}
+                />
               </FormSection>
 
               {/* Rounds Selector */}
@@ -304,37 +300,60 @@ const ClashSquad = () => {
                   }}
                 />
               </FormSection>
-
-              {/* Name Input */}
-
-              {/* Bet Amount Input */}
-              <FormSection title="Bet Amount">
-                <TextInput
-                  style={styles.input}
-                  value={formState.amount}
-                  onChangeText={(text) => setBet(text)}
-                  placeholder="Enter amount"
-                  keyboardType="numeric"
-                />
-                <Text style={styles.minimumBet}>
-                  Minimum bet amount starts from ₹10
-                </Text>
-              </FormSection>
-
-              {/* Publish Button */}
-              <Pressable style={styles.publishButton} onPress={createMatches}>
-                <Text style={styles.publishButtonText}>Publish Match</Text>
-              </Pressable>
             </ScrollView>
           </MotiView>
         </Pressable>
 
-        <TextInput
-          style={styles.input}
-          value={"Enter room Name"}
-          onChangeText={(text) => (roomName.current = text)}
-          placeholder="Enter room name"
-        />
+        {/* Name Input */}
+        <View
+          // style={{
+          //   backgroundColor: "white",
+          //   paddingBottom: 10,
+          //   paddingTop: -10,
+          // }}
+          style={[
+            styles.modalContent,
+            {
+              marginBottom: -10,
+              marginTop: -25,
+              borderBottomRightRadius: 25,
+              borderBottomLeftRadius: 25,
+              padding: 10,
+            },
+          ]}
+        >
+          <FormSection title="Room Name">
+            <TextInput
+              style={[styles.input, {}]}
+              value={formState.name}
+              onChangeText={(val) => handleFormUpdate("roomName", val)}
+              placeholder="Enter room name"
+            />
+          </FormSection>
+
+          {/* Bet Amount Input */}
+          <FormSection title="Bet Amount">
+            <TextInput
+              style={styles.input}
+              value={formState.amount}
+              onChangeText={async (val) => {
+                await handleFormUpdate("bet", val);
+
+                console.log(formState.bet);
+              }}
+              placeholder="Enter amount"
+              keyboardType="numeric"
+            />
+
+            <Text style={styles.minimumBet}>
+              Minimum bet amount starts from ₹10
+            </Text>
+          </FormSection>
+        </View>
+        {/* Publish Button */}
+        <Pressable style={styles.publishButton} onPress={createMatches}>
+          <Text style={styles.publishButtonText}>Publish Match</Text>
+        </Pressable>
       </Modal>
     </View>
   );
@@ -491,8 +510,12 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "#F5F5F5",
     borderRadius: 8,
+    shadowColor: "green",
+    shadowOffset: { width: 0, height: 1 },
+
     padding: 12,
     fontSize: 16,
+    borderRadius: 30,
   },
   minimumBet: {
     color: "#FF4444",
